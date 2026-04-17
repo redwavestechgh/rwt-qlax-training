@@ -1,0 +1,7 @@
+# Student-generated output files
+analysis_output.png
+*.pyc
+__pycache__/
+.ipynb_checkpoints/
+.Rhistory
+.RData
