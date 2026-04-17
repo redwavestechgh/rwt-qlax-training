@@ -27,6 +27,10 @@
     button[type="submit"]:hover { background: #c0392b; }
     .thanks { text-align: center; display: none; }
     .thanks h2 { color: #e94560; margin-bottom: 1rem; }
+    .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-top: 0.5rem; }
+    .cb { display: flex; align-items: center; gap: 0.5rem; font-weight: 400; font-size: 0.9rem; cursor: pointer; padding: 0.4rem 0.6rem; border-radius: 6px; margin: 0; transition: background 0.15s; }
+    .cb:hover { background: #252525; }
+    .cb input[type="checkbox"] { width: 18px; height: 18px; accent-color: #e94560; cursor: pointer; }
     .brand { text-align: center; margin-top: 2rem; font-size: 0.8rem; color: #555; }
   </style>
 </head>
@@ -50,19 +54,19 @@
         </div>
         <input type="hidden" id="rating" name="rating" value="">
 
-        <label for="best">What was the most useful part?</label>
-        <select id="best" name="best">
-          <option value="">Select one...</option>
-          <option value="spss">SPSS Orientation</option>
-          <option value="python">Python Setup & Workflow</option>
-          <option value="r">R Statistical Modeling</option>
-          <option value="jupyter">Jupyter Notebook</option>
-          <option value="streamlit">Streamlit</option>
-          <option value="github">GitHub</option>
-          <option value="dataset">Practice Dataset</option>
-          <option value="decision-tree">Finding Data Decision Tree</option>
-          <option value="cheat-sheet">Quick Reference Cheat Sheet</option>
-        </select>
+        <label>What was the most useful? (select all that apply)</label>
+        <div class="checkbox-grid" id="best-parts">
+          <label class="cb"><input type="checkbox" value="spss"> SPSS Orientation</label>
+          <label class="cb"><input type="checkbox" value="python"> Python Setup</label>
+          <label class="cb"><input type="checkbox" value="r"> R Statistical Modeling</label>
+          <label class="cb"><input type="checkbox" value="jupyter"> Jupyter Notebook</label>
+          <label class="cb"><input type="checkbox" value="streamlit"> Streamlit</label>
+          <label class="cb"><input type="checkbox" value="github"> GitHub</label>
+          <label class="cb"><input type="checkbox" value="dataset"> Practice Dataset</label>
+          <label class="cb"><input type="checkbox" value="decision-tree"> Finding Data Tree</label>
+          <label class="cb"><input type="checkbox" value="cheat-sheet"> Cheat Sheet</label>
+          <label class="cb"><input type="checkbox" value="terminal"> Terminal 101</label>
+        </div>
 
         <label for="improve">What could be improved?</label>
         <textarea id="improve" name="improve" placeholder="More time on Python... Slower pace... Add more examples..."></textarea>
@@ -117,25 +121,43 @@
       });
     });
 
-    // Form submit — store locally (no backend needed for MVP)
-    document.getElementById('feedback-form').addEventListener('submit', (e) => {
+    // Form submit — push to Firebase RTDB
+    const FIREBASE_URL = 'https://hiv-poct-default-rtdb.firebaseio.com/rwt_qlax_feedback';
+
+    document.getElementById('feedback-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+
+      // Collect checked items
+      const bestParts = [];
+      document.querySelectorAll('#best-parts input:checked').forEach(cb => bestParts.push(cb.value));
+
       const data = {
-        name: document.getElementById('name').value,
-        rating: ratingInput.value,
-        best: document.getElementById('best').value,
+        name: document.getElementById('name').value || 'Anonymous',
+        rating: parseInt(ratingInput.value) || 0,
+        best: bestParts,
         improve: document.getElementById('improve').value,
         interest: document.getElementById('interest').value,
         comments: document.getElementById('comments').value,
         timestamp: new Date().toISOString()
       };
-      // Store in localStorage as a simple collection
-      const existing = JSON.parse(localStorage.getItem('rwt_qlax_feedback') || '[]');
-      existing.push(data);
-      localStorage.setItem('rwt_qlax_feedback', JSON.stringify(existing));
 
-      document.getElementById('form-view').style.display = 'none';
-      document.getElementById('thanks-view').style.display = 'block';
+      try {
+        const res = await fetch(FIREBASE_URL + '.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('Network error');
+        document.getElementById('form-view').style.display = 'none';
+        document.getElementById('thanks-view').style.display = 'block';
+      } catch (err) {
+        btn.textContent = 'Submit Feedback';
+        btn.disabled = false;
+        alert('Could not submit — check your internet connection and try again.');
+      }
     });
   </script>
 </body>
