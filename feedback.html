@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RWT Qlax Bootcamp — Feedback</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #141414; color: #eee; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .card { background: #1e1e1e; border-radius: 16px; padding: 2.5rem; max-width: 560px; width: 100%; border: 1px solid #2a2a2a; }
+    h1 { color: #e94560; font-size: 1.6rem; margin-bottom: 0.3rem; }
+    .subtitle { color: #999; font-size: 0.95rem; margin-bottom: 2rem; }
+    label { display: block; font-weight: 600; margin-bottom: 0.4rem; margin-top: 1.2rem; font-size: 0.95rem; }
+    input, textarea, select { width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #333; background: #252525; color: #eee; font-size: 0.95rem; font-family: inherit; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: #e94560; }
+    textarea { resize: vertical; min-height: 100px; }
+    .stars { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .stars input[type="radio"] { display: none; }
+    .stars label { cursor: pointer; font-size: 2rem; color: #333; margin: 0; transition: color 0.15s; }
+    .stars input[type="radio"]:checked ~ label { color: #333; }
+    .stars label:hover, .stars label:hover ~ label { color: #e94560; }
+    .stars input[type="radio"]:checked + label, .stars :checked ~ label { color: #333; }
+    .star-item { cursor: pointer; font-size: 2rem; color: #333; transition: color 0.15s; }
+    .star-item.active { color: #e94560; }
+    .star-item:hover { color: #e94560; }
+    button[type="submit"] { margin-top: 2rem; width: 100%; padding: 0.85rem; background: #e94560; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s; }
+    button[type="submit"]:hover { background: #c0392b; }
+    .thanks { text-align: center; display: none; }
+    .thanks h2 { color: #e94560; margin-bottom: 1rem; }
+    .brand { text-align: center; margin-top: 2rem; font-size: 0.8rem; color: #555; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="form-view">
+      <h1>Bootcamp Feedback</h1>
+      <p class="subtitle">Help us improve — your honest feedback shapes the next session.</p>
+
+      <form id="feedback-form">
+        <label for="name">Your Name (optional)</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Kwame Asante">
+
+        <label>Overall Rating</label>
+        <div class="stars" id="star-rating">
+          <span class="star-item" data-value="1">&#9733;</span>
+          <span class="star-item" data-value="2">&#9733;</span>
+          <span class="star-item" data-value="3">&#9733;</span>
+          <span class="star-item" data-value="4">&#9733;</span>
+          <span class="star-item" data-value="5">&#9733;</span>
+        </div>
+        <input type="hidden" id="rating" name="rating" value="">
+
+        <label for="best">What was the most useful part?</label>
+        <select id="best" name="best">
+          <option value="">Select one...</option>
+          <option value="spss">SPSS Orientation</option>
+          <option value="python">Python Setup & Workflow</option>
+          <option value="r">R Statistical Modeling</option>
+          <option value="jupyter">Jupyter Notebook</option>
+          <option value="streamlit">Streamlit</option>
+          <option value="github">GitHub</option>
+          <option value="dataset">Practice Dataset</option>
+          <option value="decision-tree">Finding Data Decision Tree</option>
+          <option value="cheat-sheet">Quick Reference Cheat Sheet</option>
+        </select>
+
+        <label for="improve">What could be improved?</label>
+        <textarea id="improve" name="improve" placeholder="More time on Python... Slower pace... Add more examples..."></textarea>
+
+        <label for="interest">Would you join the 4-Week Program?</label>
+        <select id="interest" name="interest">
+          <option value="">Select one...</option>
+          <option value="yes">Yes, definitely</option>
+          <option value="maybe">Maybe, tell me more</option>
+          <option value="no">Not right now</option>
+        </select>
+
+        <label for="comments">Anything else?</label>
+        <textarea id="comments" name="comments" placeholder="Optional — say whatever is on your mind"></textarea>
+
+        <button type="submit">Submit Feedback</button>
+      </form>
+    </div>
+
+    <div class="thanks" id="thanks-view">
+      <h2>Thank You!</h2>
+      <p>Your feedback helps us build better training experiences.</p>
+      <p style="margin-top: 1rem; color: #999;">— RedWaves Tech</p>
+    </div>
+
+    <div class="brand">RedWaves Tech — Engineering Intelligence Systems for the Future</div>
+  </div>
+
+  <script>
+    // Star rating
+    const stars = document.querySelectorAll('.star-item');
+    const ratingInput = document.getElementById('rating');
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const val = parseInt(star.dataset.value);
+        ratingInput.value = val;
+        stars.forEach(s => {
+          s.classList.toggle('active', parseInt(s.dataset.value) <= val);
+        });
+      });
+      star.addEventListener('mouseenter', () => {
+        const val = parseInt(star.dataset.value);
+        stars.forEach(s => {
+          s.style.color = parseInt(s.dataset.value) <= val ? '#e94560' : '#333';
+        });
+      });
+    });
+    document.getElementById('star-rating').addEventListener('mouseleave', () => {
+      const current = parseInt(ratingInput.value) || 0;
+      stars.forEach(s => {
+        s.style.color = parseInt(s.dataset.value) <= current ? '#e94560' : '#333';
+      });
+    });
+
+    // Form submit — store locally (no backend needed for MVP)
+    document.getElementById('feedback-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById('name').value,
+        rating: ratingInput.value,
+        best: document.getElementById('best').value,
+        improve: document.getElementById('improve').value,
+        interest: document.getElementById('interest').value,
+        comments: document.getElementById('comments').value,
+        timestamp: new Date().toISOString()
+      };
+      // Store in localStorage as a simple collection
+      const existing = JSON.parse(localStorage.getItem('rwt_qlax_feedback') || '[]');
+      existing.push(data);
+      localStorage.setItem('rwt_qlax_feedback', JSON.stringify(existing));
+
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('thanks-view').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
