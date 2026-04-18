@@ -1861,6 +1861,37 @@ ggplot(data, aes(x = age)) + geom_histogram(bins = 20)</code></pre>
           </table>
         </div>
 
+        <!-- Google Colab Alternative -->
+        <div class="collapsible-item">
+          <div class="collapsible-header">
+            <span class="collapsible-header-text">No Local Install? Use Google Colab</span>
+            <span class="chevron">▶</span>
+          </div>
+          <div class="collapsible-content">
+            <p>Google Colab is a free, browser-based Jupyter environment that requires zero installation — just a Google account. It's perfect if you couldn't install Python or Jupyter locally.</p>
+
+            <p><strong>Getting started:</strong></p>
+            <ol>
+              <li>Go to <a href="https://colab.research.google.com" target="_blank" rel="noopener">colab.research.google.com</a> and sign in with your Google account</li>
+              <li>Click <strong>New Notebook</strong> to create a blank notebook</li>
+              <li>To open an existing <code>.ipynb</code> file, use <strong>File → Upload notebook</strong></li>
+            </ol>
+
+            <p><strong>Key differences from local Jupyter:</strong></p>
+            <ul>
+              <li>Packages like <code>pandas</code> and <code>matplotlib</code> are pre-installed</li>
+              <li>To install additional packages, use <code>!pip install package_name</code> (note the <code>!</code> prefix)</li>
+              <li>Files are saved to Google Drive, not your local machine</li>
+              <li>Sessions disconnect after ~90 minutes of inactivity</li>
+            </ul>
+
+            <div class="callout callout-tip">
+              <div class="callout-label">Tip</div>
+              <p>Upload the bootcamp's <code>demo.ipynb</code> and <code>rwt_qlax_health_survey.csv</code> to Colab to follow along without any local setup. Use <strong>File → Upload notebook</strong> for the notebook, and the Files panel (folder icon on the left) to upload the CSV.</p>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- ========================
@@ -2364,6 +2395,11 @@ Thank you for your consideration.
                 <td>pip</td>
                 <td><code>pip install package</code></td>
                 <td>Install a Python package</td>
+              </tr>
+              <tr>
+                <td>Colab</td>
+                <td><code>!pip install package</code></td>
+                <td>Install a package in Google Colab</td>
               </tr>
             </tbody>
           </table>
