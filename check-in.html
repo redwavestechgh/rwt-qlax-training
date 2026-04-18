@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RWT Qlax Bootcamp — Check-In</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #141414; color: #eee; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; padding: 2rem 1rem; }
+    .container { max-width: 620px; margin: 0 auto; }
+    h1 { color: #e94560; font-size: 1.8rem; text-align: center; margin-bottom: 0.3rem; }
+    .subtitle { color: #999; font-size: 0.95rem; text-align: center; margin-bottom: 2rem; }
+
+    /* Progress bar */
+    .progress-bar { display: flex; gap: 6px; margin-bottom: 2rem; }
+    .progress-step { flex: 1; height: 4px; background: #2a2a2a; border-radius: 2px; transition: background 0.3s; }
+    .progress-step.active { background: #e94560; }
+    .progress-step.done { background: #27ae60; }
+
+    /* Sections */
+    .section { background: #1e1e1e; border-radius: 16px; padding: 2rem 2rem 1.5rem; border: 1px solid #2a2a2a; display: none; }
+    .section.visible { display: block; }
+    .section-num { color: #e94560; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.5rem; }
+    .section h2 { color: #fff; font-size: 1.25rem; margin-bottom: 0.3rem; }
+    .section .desc { color: #888; font-size: 0.88rem; margin-bottom: 1.5rem; }
+
+    /* Form elements */
+    label.field-label { display: block; font-weight: 600; margin-bottom: 0.4rem; margin-top: 1.2rem; font-size: 0.95rem; }
+    input[type="text"], select { width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #333; background: #252525; color: #eee; font-size: 0.95rem; font-family: inherit; }
+    input:focus, select:focus { outline: none; border-color: #e94560; }
+
+    /* Checkboxes */
+    .cb { display: flex; align-items: flex-start; gap: 0.6rem; font-weight: 400; font-size: 0.9rem; cursor: pointer; padding: 0.5rem 0.6rem; border-radius: 6px; margin: 0; transition: background 0.15s; }
+    .cb:hover { background: #252525; }
+    .cb input[type="checkbox"] { width: 18px; height: 18px; accent-color: #e94560; cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+
+    /* Terminal lesson */
+    .terminal-box { background: #0d1117; border: 1px solid #333; border-radius: 10px; padding: 1rem 1.2rem; margin: 0.8rem 0; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 0.85rem; color: #c9d1d9; }
+    .terminal-box .prompt { color: #e94560; }
+    .terminal-box .cmd { color: #58a6ff; }
+    .terminal-box .comment { color: #6a737d; font-style: italic; }
+    .terminal-box .output { color: #8b949e; }
+    .terminal-step { margin-bottom: 1rem; }
+    .terminal-step:last-child { margin-bottom: 0; }
+    .terminal-step-title { color: #e94560; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; }
+    .os-tabs { display: flex; gap: 0; margin-bottom: 0.8rem; }
+    .os-tab { padding: 0.5rem 1.2rem; background: #252525; color: #888; border: 1px solid #333; cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; }
+    .os-tab:first-child { border-radius: 8px 0 0 8px; }
+    .os-tab:last-child { border-radius: 0 8px 8px 0; }
+    .os-tab.active { background: #e94560; color: #fff; border-color: #e94560; }
+    .os-content { display: none; }
+    .os-content.visible { display: block; }
+
+    /* Tool verify */
+    .tool-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin-top: 0.5rem; }
+    .tool-item { background: #252525; border: 1px solid #333; border-radius: 10px; padding: 0.8rem 1rem; }
+    .tool-header { display: flex; align-items: center; gap: 0.6rem; }
+    .tool-header label.cb { padding: 0; margin: 0; }
+    .tool-name { font-weight: 600; font-size: 0.95rem; }
+    .tool-cmd { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 0.8rem; color: #58a6ff; background: #0d1117; padding: 0.3rem 0.6rem; border-radius: 4px; margin-top: 0.4rem; display: inline-block; cursor: pointer; position: relative; }
+    .tool-cmd:hover::after { content: 'Click to copy'; position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background: #333; color: #eee; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; white-space: nowrap; }
+    .tool-cmd.copied::after { content: 'Copied!'; position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background: #27ae60; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; }
+    .wa-link { display: inline-flex; align-items: center; gap: 0.4rem; color: #25D366; font-size: 0.88rem; margin-top: 0.8rem; text-decoration: none; font-weight: 600; }
+    .wa-link:hover { text-decoration: underline; }
+
+    /* Confidence scale */
+    .confidence-scale { display: flex; gap: 0; margin-top: 0.5rem; }
+    .conf-btn { flex: 1; padding: 0.8rem 0.3rem; text-align: center; background: #252525; border: 1px solid #333; color: #888; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+    .conf-btn:first-child { border-radius: 8px 0 0 8px; }
+    .conf-btn:last-child { border-radius: 0 8px 8px 0; }
+    .conf-btn:hover { background: #333; color: #eee; }
+    .conf-btn.selected { background: #e94560; color: #fff; border-color: #e94560; }
+    .conf-label { display: flex; justify-content: space-between; color: #666; font-size: 0.75rem; margin-top: 0.3rem; }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 0.8rem; margin-top: 1.8rem; }
+    .btn { flex: 1; padding: 0.85rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s; }
+    .btn-next { background: #e94560; color: #fff; }
+    .btn-next:hover { background: #c0392b; }
+    .btn-next:disabled { background: #555; cursor: not-allowed; }
+    .btn-back { background: #252525; color: #999; border: 1px solid #333; }
+    .btn-back:hover { background: #333; color: #eee; }
+    .btn-submit { background: #27ae60; color: #fff; }
+    .btn-submit:hover { background: #219a52; }
+
+    /* Thanks */
+    .thanks { text-align: center; display: none; }
+    .thanks h2 { color: #e94560; margin-bottom: 0.5rem; font-size: 1.5rem; }
+    .thanks p { color: #999; margin-bottom: 0.5rem; }
+    .thanks .redirect-msg { color: #58a6ff; font-size: 0.88rem; margin-top: 1.5rem; }
+    .brand { text-align: center; margin-top: 2rem; font-size: 0.8rem; color: #555; }
+    .required { color: #e94560; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bootcamp Check-In</h1>
+    <p class="subtitle">Complete all sections before starting your session.</p>
+
+    <div class="progress-bar">
+      <div class="progress-step active" data-step="1"></div>
+      <div class="progress-step" data-step="2"></div>
+      <div class="progress-step" data-step="3"></div>
+      <div class="progress-step" data-step="4"></div>
+      <div class="progress-step" data-step="5"></div>
+    </div>
+
+    <!-- Section 1: Attendance -->
+    <div class="section visible" id="sec-1">
+      <div class="section-num">Section 1 of 5</div>
+      <h2>Attendance</h2>
+      <p class="desc">Let us know you're here.</p>
+
+      <label class="field-label" for="stu-name">Full Name <span class="required">*</span></label>
+      <input type="text" id="stu-name" placeholder="e.g. Kwame Asante" required>
+
+      <label class="field-label" for="stu-id">Student ID <span class="required">*</span></label>
+      <input type="text" id="stu-id" placeholder="e.g. PS/ITC/24/0001">
+
+      <label class="field-label" for="stu-program">Program / Level</label>
+      <input type="text" id="stu-program" placeholder="e.g. BSc IT Level 200">
+
+      <div class="btn-row">
+        <button class="btn btn-next" onclick="goTo(2)">Next</button>
+      </div>
+    </div>
+
+    <!-- Section 2: Terminal 101 -->
+    <div class="section" id="sec-2">
+      <div class="section-num">Section 2 of 5</div>
+      <h2>Terminal 101</h2>
+      <p class="desc">You'll need your terminal to verify tool installations. Follow these 4 steps to get comfortable.</p>
+
+      <div class="os-tabs">
+        <div class="os-tab active" onclick="switchOS('win')">Windows</div>
+        <div class="os-tab" onclick="switchOS('mac')">macOS / Linux</div>
+      </div>
+
+      <div class="os-content visible" id="os-win">
+        <div class="terminal-step">
+          <div class="terminal-step-title">Step 1 — Open your terminal</div>
+          <div class="terminal-box">
+            <span class="comment"># Press Win + R, type "cmd", hit Enter</span><br>
+            <span class="comment"># Or search "Command Prompt" in Start Menu</span>
+          </div>
+        </div>
+        <div class="terminal-step">
+          <div class="terminal-step-title">Step 2 — Check where you are</div>
+          <div class="terminal-box">
+            <span class="prompt">C:\Users\You&gt;</span> <span class="cmd">cd</span><br>
+            <span class="output">C:\Users\You</span>
+          </div>
+        </div>
+        <div class="terminal-step">
+          <div class="terminal-step-title">Step 3 — List files in this folder</div>
+          <div class="terminal-box">
+            <span class="prompt">C:\Users\You&gt;</span> <span class="cmd">dir</span><br>
+            <span class="output">Desktop &nbsp; Documents &nbsp; Downloads &nbsp; ...</span>
+          </div>
+        </div>
+        <div class="terminal-step">
+          <div class="terminal-step-title">Step 4 — Clear the screen</div>
+          <div class="terminal-box">
+            <span class="prompt">C:\Users\You&gt;</span> <span class="cmd">cls</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="os-content" id="os-mac">
+        <div class="terminal-step">
+          <div class="terminal-step-title">Step 1 — Open your terminal</div>
+          <div class="terminal-box">
+            <span class="comment"># macOS: Cmd + Space, type "Terminal", hit Enter</span><br>
+            <span class="comment"># Linux: Ctrl + Alt + T</span>
+          </div>
+        </div>
+        <div class="terminal-step">
+          <div class="terminal-step-title">Step 2 — Check where you are</div>
+          <div class="terminal-box">
+            <span class="prompt">$</span> <span class="cmd">pwd</span><br>
+            <span class="output">/Users/you</span>
+          </div>
+        </div>
+        <div class="terminal-step">
+          <div class="terminal-step-title">Step 3 — List files in this folder</div>
+          <div class="terminal-box">
+            <span class="prompt">$</span> <span class="cmd">ls</span><br>
+            <span class="output">Desktop &nbsp; Documents &nbsp; Downloads &nbsp; ...</span>
+          </div>
+        </div>
+        <div class="terminal-step">
+          <div class="terminal-step-title">Step 4 — Clear the screen</div>
+          <div class="terminal-box">
+            <span class="prompt">$</span> <span class="cmd">clear</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.2rem;">
+        <label class="cb">
+          <input type="checkbox" id="terminal-done">
+          <span>I opened my terminal and tried these commands</span>
+        </label>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="goTo(1)">Back</button>
+        <button class="btn btn-next" onclick="goTo(3)">Next</button>
+      </div>
+    </div>
+
+    <!-- Section 3: Tool Setup & Verify -->
+    <div class="section" id="sec-3">
+      <div class="section-num">Section 3 of 5</div>
+      <h2>Tool Setup &amp; Verify</h2>
+      <p class="desc">Check each tool you have installed. Use the verify commands in your terminal to confirm.</p>
+
+      <div class="tool-grid">
+        <div class="tool-item">
+          <div class="tool-header">
+            <label class="cb"><input type="checkbox" data-tool="python"><span class="tool-name">Python 3</span></label>
+          </div>
+          <div class="tool-cmd" onclick="copyCmd(this)">python --version</div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <label class="cb"><input type="checkbox" data-tool="r_rstudio"><span class="tool-name">R / RStudio</span></label>
+          </div>
+          <div class="tool-cmd" onclick="copyCmd(this)">R --version</div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <label class="cb"><input type="checkbox" data-tool="jupyter"><span class="tool-name">Jupyter Notebook</span></label>
+          </div>
+          <div class="tool-cmd" onclick="copyCmd(this)">jupyter --version</div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <label class="cb"><input type="checkbox" data-tool="streamlit"><span class="tool-name">Streamlit</span></label>
+          </div>
+          <div class="tool-cmd" onclick="copyCmd(this)">streamlit --version</div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <label class="cb"><input type="checkbox" data-tool="github"><span class="tool-name">GitHub Desktop / Git</span></label>
+          </div>
+          <div class="tool-cmd" onclick="copyCmd(this)">git --version</div>
+        </div>
+
+        <div class="tool-item">
+          <div class="tool-header">
+            <label class="cb"><input type="checkbox" data-tool="spss"><span class="tool-name">SPSS</span></label>
+          </div>
+          <div style="font-size: 0.82rem; color: #888; margin-top: 0.4rem;">Open SPSS and check Help &rarr; About</div>
+        </div>
+      </div>
+
+      <a class="wa-link" href="https://wa.me/233241782407?text=Hi%2C%20I%20need%20help%20with%20tool%20setup%20for%20the%20Qlax%20Bootcamp" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Need help? Message us on WhatsApp
+      </a>
+
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="goTo(2)">Back</button>
+        <button class="btn btn-next" onclick="goTo(4)">Next</button>
+      </div>
+    </div>
+
+    <!-- Section 4: Confidence -->
+    <div class="section" id="sec-4">
+      <div class="section-num">Section 4 of 5</div>
+      <h2>Confidence Level</h2>
+      <p class="desc">How confident do you feel about using data analysis tools right now?</p>
+
+      <div class="confidence-scale" id="conf-scale">
+        <div class="conf-btn" data-val="1" onclick="setConf(1)">1</div>
+        <div class="conf-btn" data-val="2" onclick="setConf(2)">2</div>
+        <div class="conf-btn" data-val="3" onclick="setConf(3)">3</div>
+        <div class="conf-btn" data-val="4" onclick="setConf(4)">4</div>
+        <div class="conf-btn" data-val="5" onclick="setConf(5)">5</div>
+      </div>
+      <div class="conf-label">
+        <span>Not confident</span>
+        <span>Very confident</span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="goTo(3)">Back</button>
+        <button class="btn btn-next" onclick="goTo(5)">Next</button>
+      </div>
+    </div>
+
+    <!-- Section 5: Review & Submit -->
+    <div class="section" id="sec-5">
+      <div class="section-num">Section 5 of 5</div>
+      <h2>Review &amp; Submit</h2>
+      <p class="desc">Double-check your details, then hit submit to start your session.</p>
+
+      <div id="review-summary" style="background: #252525; border-radius: 10px; padding: 1.2rem; font-size: 0.9rem; line-height: 1.7;">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="goTo(4)">Back</button>
+        <button class="btn btn-submit" id="submit-btn" onclick="submitCheckin()">Submit Check-In</button>
+      </div>
+    </div>
+
+    <!-- Thanks -->
+    <div class="section thanks" id="thanks-view">
+      <h2>You're All Set!</h2>
+      <p>Welcome to the bootcamp session.</p>
+      <p class="redirect-msg">Redirecting to the guide in <span id="countdown">5</span>s...</p>
+    </div>
+
+    <div class="brand">RedWaves Tech — Engineering Intelligence Systems for the Future</div>
+  </div>
+
+  <script>
+    // ── State ──
+    let currentSection = 1;
+    let confidence = 0;
+
+    // ── Navigation ──
+    function goTo(n) {
+      // Validate before advancing
+      if (n > currentSection) {
+        if (!validateSection(currentSection)) return;
+      }
+      // Show section
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+      document.getElementById('sec-' + n).classList.add('visible');
+      // Update progress
+      document.querySelectorAll('.progress-step').forEach(s => {
+        const step = parseInt(s.dataset.step);
+        s.classList.remove('active', 'done');
+        if (step < n) s.classList.add('done');
+        else if (step === n) s.classList.add('active');
+      });
+      currentSection = n;
+      // Populate review on section 5
+      if (n === 5) populateReview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateSection(n) {
+      if (n === 1) {
+        const name = document.getElementById('stu-name').value.trim();
+        const id = document.getElementById('stu-id').value.trim();
+        if (!name || !id) {
+          alert('Please fill in your Name and Student ID.');
+          return false;
+        }
+      }
+      if (n === 2) {
+        if (!document.getElementById('terminal-done').checked) {
+          alert('Please confirm you tried the terminal commands before continuing.');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // ── OS Tabs ──
+    function switchOS(os) {
+      document.querySelectorAll('.os-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.os-content').forEach(c => c.classList.remove('visible'));
+      if (os === 'win') {
+        document.querySelectorAll('.os-tab')[0].classList.add('active');
+        document.getElementById('os-win').classList.add('visible');
+      } else {
+        document.querySelectorAll('.os-tab')[1].classList.add('active');
+        document.getElementById('os-mac').classList.add('visible');
+      }
+    }
+
+    // ── Copy command ──
+    function copyCmd(el) {
+      const text = el.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        el.classList.add('copied');
+        setTimeout(() => el.classList.remove('copied'), 1500);
+      });
+    }
+
+    // ── Confidence ──
+    function setConf(val) {
+      confidence = val;
+      document.querySelectorAll('.conf-btn').forEach(b => {
+        b.classList.toggle('selected', parseInt(b.dataset.val) === val);
+      });
+    }
+
+    // ── Review ──
+    function populateReview() {
+      const name = document.getElementById('stu-name').value.trim();
+      const id = document.getElementById('stu-id').value.trim();
+      const program = document.getElementById('stu-program').value.trim() || 'Not specified';
+      const tools = [];
+      document.querySelectorAll('[data-tool]').forEach(cb => {
+        if (cb.checked) tools.push(cb.dataset.tool.replace('_', '/'));
+      });
+      const confLabels = ['—', 'Not confident', 'Slightly', 'Moderate', 'Confident', 'Very confident'];
+      document.getElementById('review-summary').innerHTML =
+        '<strong style="color:#e94560;">Name:</strong> ' + escHtml(name) + '<br>' +
+        '<strong style="color:#e94560;">Student ID:</strong> ' + escHtml(id) + '<br>' +
+        '<strong style="color:#e94560;">Program:</strong> ' + escHtml(program) + '<br>' +
+        '<strong style="color:#e94560;">Terminal 101:</strong> Completed<br>' +
+        '<strong style="color:#e94560;">Tools Ready:</strong> ' + (tools.length ? tools.join(', ') : 'None checked') + '<br>' +
+        '<strong style="color:#e94560;">Confidence:</strong> ' + (confidence ? confidence + '/5 — ' + confLabels[confidence] : 'Not rated');
+    }
+
+    function escHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    // ── Submit ──
+    const FIREBASE_URL = 'https://hiv-poct-default-rtdb.firebaseio.com/rwt_qlax_checkin';
+
+    async function submitCheckin() {
+      const btn = document.getElementById('submit-btn');
+      btn.textContent = 'Submitting...';
+      btn.disabled = true;
+
+      const tools = {};
+      document.querySelectorAll('[data-tool]').forEach(cb => {
+        tools[cb.dataset.tool] = cb.checked;
+      });
+
+      const data = {
+        name: document.getElementById('stu-name').value.trim(),
+        studentId: document.getElementById('stu-id').value.trim(),
+        program: document.getElementById('stu-program').value.trim() || '',
+        terminalCompleted: document.getElementById('terminal-done').checked,
+        tools: tools,
+        confidence: confidence,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch(FIREBASE_URL + '.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('Network error');
+        // Show thanks
+        document.querySelectorAll('.section').forEach(s => { s.classList.remove('visible'); s.style.display = 'none'; });
+        const thanks = document.getElementById('thanks-view');
+        thanks.style.display = 'block';
+        thanks.classList.add('visible');
+        // Update progress bar — all done
+        document.querySelectorAll('.progress-step').forEach(s => s.classList.add('done'));
+        // Countdown redirect
+        let count = 5;
+        const timer = setInterval(() => {
+          count--;
+          document.getElementById('countdown').textContent = count;
+          if (count <= 0) {
+            clearInterval(timer);
+            window.location.href = 'index.html';
+          }
+        }, 1000);
+      } catch (err) {
+        btn.textContent = 'Submit Check-In';
+        btn.disabled = false;
+        alert('Could not submit — check your internet connection and try again.');
+      }
+    }
+  </script>
+</body>
+</html>
