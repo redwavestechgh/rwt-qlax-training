@@ -140,28 +140,37 @@
         <div class="terminal-step">
           <div class="terminal-step-title">Step 1 — Open your terminal</div>
           <div class="terminal-box">
-            <span class="comment"># Press Win + R, type "cmd", hit Enter</span><br>
+            <span class="comment"># Easiest way: go to your Desktop,</span><br>
+            <span class="comment"># right-click on an empty space &rarr; "Open in Terminal"</span><br>
+            <span class="comment"># (You'll start right on your Desktop!)</span>
+          </div>
+          <div style="color:#888; font-size:0.82rem; margin: 0.5rem 0 0.2rem; font-style:italic;">Alternatively:</div>
+          <div class="terminal-box" style="margin-top:0;">
+            <span class="comment"># Press Win + R, type:</span><br>
+            <span class="prompt">&gt;</span> <span class="tool-cmd" onclick="copyCmd(this)" style="display:inline; padding:0.15rem 0.5rem; margin:0;">cmd</span> <span class="comment">&nbsp; then hit Enter</span><br>
             <span class="comment"># Or search "Command Prompt" in Start Menu</span>
           </div>
         </div>
         <div class="terminal-step">
-          <div class="terminal-step-title">Step 2 — Check where you are</div>
+          <div class="terminal-step-title">Step 2 — Navigate to Desktop</div>
           <div class="terminal-box">
-            <span class="prompt">C:\Users\You&gt;</span> <span class="cmd">cd</span><br>
-            <span class="output">C:\Users\You</span>
+            <span class="comment"># If you used right-click, you're already here! Skip this.</span><br>
+            <span class="comment"># Otherwise, type:</span><br>
+            <span class="prompt">C:\Users\You&gt;</span> <span class="tool-cmd" onclick="copyCmd(this)" style="display:inline; padding:0.15rem 0.5rem; margin:0;">cd Desktop</span><br>
+            <span class="output">C:\Users\You\Desktop&gt;</span>
           </div>
         </div>
         <div class="terminal-step">
-          <div class="terminal-step-title">Step 3 — List files in this folder</div>
+          <div class="terminal-step-title">Step 3 — List files on your Desktop</div>
           <div class="terminal-box">
-            <span class="prompt">C:\Users\You&gt;</span> <span class="cmd">dir</span><br>
-            <span class="output">Desktop &nbsp; Documents &nbsp; Downloads &nbsp; ...</span>
+            <span class="prompt">C:\Users\You\Desktop&gt;</span> <span class="tool-cmd" onclick="copyCmd(this)" style="display:inline; padding:0.15rem 0.5rem; margin:0;">dir</span><br>
+            <span class="output">my_file.docx &nbsp; project_folder &nbsp; notes.txt &nbsp; ...</span>
           </div>
         </div>
         <div class="terminal-step">
           <div class="terminal-step-title">Step 4 — Clear the screen</div>
           <div class="terminal-box">
-            <span class="prompt">C:\Users\You&gt;</span> <span class="cmd">cls</span>
+            <span class="prompt">C:\Users\You\Desktop&gt;</span> <span class="tool-cmd" onclick="copyCmd(this)" style="display:inline; padding:0.15rem 0.5rem; margin:0;">cls</span>
           </div>
         </div>
       </div>
@@ -175,23 +184,23 @@
           </div>
         </div>
         <div class="terminal-step">
-          <div class="terminal-step-title">Step 2 — Check where you are</div>
+          <div class="terminal-step-title">Step 2 — Navigate to Desktop</div>
           <div class="terminal-box">
-            <span class="prompt">$</span> <span class="cmd">pwd</span><br>
-            <span class="output">/Users/you</span>
+            <span class="prompt">$</span> <span class="tool-cmd" onclick="copyCmd(this)" style="display:inline; padding:0.15rem 0.5rem; margin:0;">cd ~/Desktop</span><br>
+            <span class="output">~/Desktop$</span>
           </div>
         </div>
         <div class="terminal-step">
-          <div class="terminal-step-title">Step 3 — List files in this folder</div>
+          <div class="terminal-step-title">Step 3 — List files on your Desktop</div>
           <div class="terminal-box">
-            <span class="prompt">$</span> <span class="cmd">ls</span><br>
-            <span class="output">Desktop &nbsp; Documents &nbsp; Downloads &nbsp; ...</span>
+            <span class="prompt">~/Desktop$</span> <span class="tool-cmd" onclick="copyCmd(this)" style="display:inline; padding:0.15rem 0.5rem; margin:0;">ls</span><br>
+            <span class="output">my_file.docx &nbsp; project_folder &nbsp; notes.txt &nbsp; ...</span>
           </div>
         </div>
         <div class="terminal-step">
           <div class="terminal-step-title">Step 4 — Clear the screen</div>
           <div class="terminal-box">
-            <span class="prompt">$</span> <span class="cmd">clear</span>
+            <span class="prompt">~/Desktop$</span> <span class="tool-cmd" onclick="copyCmd(this)" style="display:inline; padding:0.15rem 0.5rem; margin:0;">clear</span>
           </div>
         </div>
       </div>
