@@ -60,6 +60,12 @@
     .tool-cmd { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 0.8rem; color: #58a6ff; background: #0d1117; padding: 0.3rem 0.6rem; border-radius: 4px; margin-top: 0.4rem; display: inline-block; cursor: pointer; position: relative; }
     .tool-cmd:hover::after { content: 'Click to copy'; position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background: #333; color: #eee; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; white-space: nowrap; }
     .tool-cmd.copied::after { content: 'Copied!'; position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background: #27ae60; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; }
+    .install-link { display: inline-block; font-size: 0.78rem; color: #e94560; text-decoration: none; margin-top: 0.4rem; font-weight: 600; border-bottom: 1px dashed #e9456066; padding-bottom: 1px; }
+    .install-link:hover { color: #ff6b81; border-bottom-color: #ff6b81; }
+    .install-hint { font-size: 0.78rem; color: #666; margin-top: 0.3rem; }
+    .install-cmd { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 0.78rem; color: #58a6ff; background: #0d1117; padding: 0.2rem 0.5rem; border-radius: 4px; margin-top: 0.3rem; display: inline-block; cursor: pointer; position: relative; }
+    .install-cmd:hover::after { content: 'Click to copy'; position: absolute; top: -24px; left: 50%; transform: translateX(-50%); background: #333; color: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.68rem; white-space: nowrap; }
+    .install-cmd.copied::after { content: 'Copied!'; position: absolute; top: -24px; left: 50%; transform: translateX(-50%); background: #27ae60; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.68rem; }
     .wa-link { display: inline-flex; align-items: center; gap: 0.4rem; color: #25D366; font-size: 0.88rem; margin-top: 0.8rem; text-decoration: none; font-weight: 600; }
     .wa-link:hover { text-decoration: underline; }
 
@@ -230,6 +236,9 @@
             <label class="cb"><input type="checkbox" data-tool="python"><span class="tool-name">Python 3</span></label>
           </div>
           <div class="tool-cmd" onclick="copyCmd(this)">python --version</div>
+          <div class="install-hint">Not installed?</div>
+          <a class="install-link" href="https://www.python.org/downloads/" target="_blank" rel="noopener">Download from python.org</a>
+          <div class="install-hint" style="margin-top:0.2rem;">Tick <strong>"Add Python to PATH"</strong> during install, then restart your terminal.</div>
         </div>
 
         <div class="tool-item">
@@ -237,6 +246,9 @@
             <label class="cb"><input type="checkbox" data-tool="r_rstudio"><span class="tool-name">R / RStudio</span></label>
           </div>
           <div class="tool-cmd" onclick="copyCmd(this)">R --version</div>
+          <div class="install-hint">Not installed?</div>
+          <a class="install-link" href="https://cran.r-project.org/" target="_blank" rel="noopener">1. Download R from CRAN</a><br>
+          <a class="install-link" href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener">2. Download RStudio Desktop (free)</a>
         </div>
 
         <div class="tool-item">
@@ -244,6 +256,8 @@
             <label class="cb"><input type="checkbox" data-tool="jupyter"><span class="tool-name">Jupyter Notebook</span></label>
           </div>
           <div class="tool-cmd" onclick="copyCmd(this)">jupyter --version</div>
+          <div class="install-hint">Not installed? Run this after Python is set up:</div>
+          <div class="install-cmd" onclick="copyCmd(this)">pip install notebook</div>
         </div>
 
         <div class="tool-item">
@@ -251,6 +265,8 @@
             <label class="cb"><input type="checkbox" data-tool="streamlit"><span class="tool-name">Streamlit</span></label>
           </div>
           <div class="tool-cmd" onclick="copyCmd(this)">streamlit --version</div>
+          <div class="install-hint">Not installed? Run this after Python is set up:</div>
+          <div class="install-cmd" onclick="copyCmd(this)">pip install streamlit</div>
         </div>
 
         <div class="tool-item">
@@ -258,6 +274,10 @@
             <label class="cb"><input type="checkbox" data-tool="github"><span class="tool-name">GitHub Desktop / Git</span></label>
           </div>
           <div class="tool-cmd" onclick="copyCmd(this)">git --version</div>
+          <div class="install-hint">Not installed?</div>
+          <a class="install-link" href="https://desktop.github.com/" target="_blank" rel="noopener">GitHub Desktop (easiest)</a>
+          <span style="color:#555; font-size:0.78rem;"> or </span>
+          <a class="install-link" href="https://git-scm.com/downloads" target="_blank" rel="noopener">Git CLI</a>
         </div>
 
         <div class="tool-item">
@@ -265,6 +285,7 @@
             <label class="cb"><input type="checkbox" data-tool="spss"><span class="tool-name">SPSS</span></label>
           </div>
           <div style="font-size: 0.82rem; color: #888; margin-top: 0.4rem;">Open SPSS and check Help &rarr; About</div>
+          <div class="install-hint">SPSS requires a university or IBM license. Check with your department's IT lab if not installed.</div>
         </div>
 
         <div class="tool-item">
@@ -272,6 +293,7 @@
             <label class="cb"><input type="checkbox" data-tool="colab"><span class="tool-name">Google Colab</span></label>
           </div>
           <div style="font-size: 0.82rem; color: #888; margin-top: 0.4rem;">Open <a href="https://colab.research.google.com" target="_blank" rel="noopener" style="color:#58a6ff;">colab.research.google.com</a> and sign in with your Google account</div>
+          <div class="install-hint">No install needed &mdash; runs in your browser. Just need a Google account.</div>
         </div>
       </div>
 
